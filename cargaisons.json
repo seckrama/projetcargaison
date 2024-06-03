@@ -1,0 +1,161 @@
+{
+    "cargaisons": [
+        {
+            "idcargo": "665b52a487ff0",
+            "codeUnique": "0qvf1j9mo",
+            "type": "aerienne",
+            "distance": 43,
+            "datedebut": "2030-02-14",
+            "datefin": "2040-04-29",
+            "lieu_depart": " ut",
+            "lieu_arrive": " qui ",
+            "poidscargo": 1000
+        },
+        {
+            "idcargo": "665b5372c968c",
+            "codeUnique": "COnsgfr0z",
+            "type": "routiere",
+            "distance": 20,
+            "datedebut": "2025-08-26",
+            "datefin": "2026-03-07",
+            "lieu_depart": " cill",
+            "lieu_arrive": "Corporis min",
+            "poidscargo": 1000
+        },
+        {
+            "idcargo": "665b5420c5241",
+            "codeUnique": "CO05k1",
+            "type": "maritime",
+            "distance": 44,
+            "datedebut": "2040-03-12",
+            "datefin": "2050-02-28",
+            "lieu_depart": " amet",
+            "lieu_arrive": "amet",
+            "poidscargo": 1000
+        },
+        {
+            "idcargo": "665b62953d0b7",
+            "codeUnique": "COoeco",
+            "type": "routiere",
+            "distance": 90,
+            "datedebut": "2024-07-06",
+            "datefin": "2025-10-06",
+            "lieu_depart": " culpa ",
+            "lieu_arrive": " repellendus",
+            "poidscargo": 1000
+        },
+        {
+            "idcargo": "665b629f2bc66",
+            "codeUnique": "COvt24",
+            "type": "routiere",
+            "distance": 90,
+            "datedebut": "2024-07-06",
+            "datefin": "2025-10-06",
+            "lieu_depart": " culpa ",
+            "lieu_arrive": " Es",
+            "poidscargo": 1000
+        },
+        {
+            "idcargo": "665b714a4c475",
+            "codeUnique": "COwowl",
+            "type": "aerienne",
+            "distance": 63,
+            "datedebut": "2025-09-17",
+            "datefin": "2026-03-05",
+            "lieu_depart": " consec",
+            "lieu_arrive": "Repudiandae aut aliq",
+            "poidscargo": 1000
+        },
+        {
+            "idcargo": "665b9c3002353",
+            "codeUnique": "COhw0v",
+            "type": "aerienne",
+            "distance": 55,
+            "datedebut": "2025-01-02",
+            "datefin": "2026-05-13",
+            "lieu_depart": "dakar",
+            "lieu_arrive": "saintlouis",
+            "poidscargo": 1000
+        },
+        {
+            "idcargo": "665b9c33645d0",
+            "codeUnique": "CO6mb9",
+            "type": "aerienne",
+            "distance": 55,
+            "datedebut": "2025-01-02",
+            "datefin": "2026-05-13",
+            "lieu_depart": "dakar",
+            "lieu_arrive": "saintlouis",
+            "poidscargo": 1000
+        },
+        {
+            "idcargo": "665c30d55132a",
+            "codeUnique": "COz7xh",
+            "type": "routiere",
+            "distance": 2,
+            "datedebut": "2025-09-11",
+            "datefin": "2027-02-21",
+            "lieu_depart": " France",
+            "lieu_arrive": " France",
+            "poidscargo": 1000
+        },
+        {
+            "idcargo": "665c324b5c9bf",
+            "codeUnique": "COy5mr",
+            "type": "maritime",
+            "distance": 2,
+            "datedebut": "2025-06-10",
+            "datefin": "2030-07-20",
+            "lieu_depart": " France",
+            "lieu_arrive": " France",
+            "poidscargo": null,
+            "nomreproduit": 100
+        },
+        {
+            "idcargo": "665c349383d5d",
+            "codeUnique": "CO88va",
+            "type": "aerienne",
+            "distance": 48,
+            "datedebut": "2025-03-28",
+            "datefin": "2027-12-08",
+            "lieu_depart": "  eiu",
+            "lieu_arrive": "Soluta",
+            "poidscargo": 8,
+            "nomreproduit": null
+        },
+        {
+            "idcargo": "665c35223ae3a",
+            "codeUnique": "COqcel",
+            "type": "maritime",
+            "distance": 54,
+            "datedebut": "2025-02-15",
+            "datefin": "2040-04-30",
+            "lieu_depart": " et deb",
+            "lieu_arrive": "a et deb",
+            "poidscargo": 12,
+            "nomreproduit": 12
+        },
+        {
+            "idcargo": "665c35d8c31f7",
+            "codeUnique": "COeosi",
+            "type": "routiere",
+            "distance": 58,
+            "datedebut": "2025-01-02",
+            "datefin": "2027-04-15",
+            "lieu_depart": "Dolorem m ",
+            "lieu_arrive": "Qui iusto  ",
+            "poidscargo": null,
+            "nomreproduit": 12
+        },
+        {
+            "idcargo": "665c360ce651f",
+            "codeUnique": "COj698",
+            "type": "maritime",
+            "distance": 8,
+            "datedebut": "2025-08-08",
+            "datefin": "2027-07-10",
+            "lieu_depart": "Cum  ",
+            "lieu_arrive": "Cum  "
+        }
+    ]
+}

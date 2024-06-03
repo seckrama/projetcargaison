@@ -2,178 +2,363 @@ import { Produit, Alimentaire, Chimique, Fragile, Incassable } from './Model/Pro
 import { Cargaison, CargaisonAerienne, CargaisonMaritime, CargaisonRoutiere } from './Model/Cargaison';
 
 let cargaisons: Cargaison[] = [];
+let filteredCargaisons: Cargaison[] = [];
 
 function showDetails(type: string, distance: number) {
-    const cargaison = cargaisons.find(c => c.type === type && c.distance === distance);
+    const cargaison = cargaisons.find((c: any) => c.type === type && c.distance === distance);
     if (cargaison) {
         const details = `
-        <div style="margin-left:20px">
-
-            <h2>Détails de la Cargaison</h2>
-            <p>Type: ${cargaison.type}</p>
-            <p>Distance: ${cargaison.distance} km</p>
-            <p>Nombre de produits: ${cargaison.nbProduits()}</p>
-            <p>Montant total: ${cargaison.sommeTotaleC()} F</p>
-            <ul>
-                ${cargaison.produits.map(produit => `<li>${produit.info()}</li>`).join('')}
-            </ul>
-            </div>
+        
+        <p>Type: ${cargaison.type}</p>
+        <p>Distance: ${cargaison.distance} km</p>
+        <p>Lieu de départ: ${cargaison.lieu_depart}</p>
+        <p>Lieu d'arrivée: ${cargaison.lieu_arrive}</p>
+        <p>date de debut: ${cargaison.datedebut}</p>
+        <p>date de fin: ${cargaison.datefin}</p>
         `;
-        document.getElementById('details-container')!.innerHTML = details;
-        const modal = document.getElementById('details-modal');
-        if (modal) {
-            modal.classList.remove('hidden');
-            modal.style.display = 'block';
-            modal.style.marginLeft ="400px"
-            modal.style.zIndex ="30"
-            modal.style.backgroundColor ="gray"
-            modal.style.width ="30%";
-            modal.style.color ="white"
+        const detailsContainer = document.getElementById('details-container');
+        if (detailsContainer) {
+            detailsContainer.innerHTML = details;
+            const modal = document.getElementById('details-modal') as HTMLDialogElement;
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.showModal(); // Afficher le modal
+            }
         }
     } else {
         console.log("Cargaison non trouvée.");
     }
 }
 
+function closeModal() {
+    const modal = document.getElementById('details-modal') as HTMLDialogElement;
+    if (modal) {
+        modal.close(); // Fermer le modal
+    }
+}
+
+
+
+    
+
 (window as any).showDetails = showDetails;
 
-document.getElementById('submit-cargaison')?.addEventListener('click', (e) => {
-    e.preventDefault();
-    const distanceInput = <HTMLInputElement>document.getElementById('distance');
-    const typeInput = <HTMLSelectElement>document.getElementById('type-cargaison');
 
-    const distance = parseInt(distanceInput.value);
-    const type = typeInput.value;
-
-    let cargaison: Cargaison | null = null;
-    switch (type) {
-        case 'aerienne':
-            cargaison = new CargaisonAerienne(distance);
-            break;
-        case 'maritime':
-            cargaison = new CargaisonMaritime(distance);
-            break;
-        case 'routiere':
-            cargaison = new CargaisonRoutiere(distance);
-            break;
+function addProduct() {
+  
+        const detailsContainer = document.getElementById('ajouter-container');
+        if (detailsContainer) {
+            const modal = document.getElementById('ajouter-product') as HTMLDialogElement;
+            if (modal) {
+                modal.classList.remove('hidden');
+                modal.showModal(); // Afficher le modal
+            }
+      
+        }
     }
 
-    if (cargaison) {
-        // Récupération des valeurs du produit à partir du formulaire
-        const libelleProduitInput = <HTMLInputElement>document.getElementById('libelle-produit');
-        const poidsProduitInput = <HTMLInputElement>document.getElementById('poids-produit');
-        const typeProduitInput = <HTMLSelectElement>document.getElementById('type-produit');
 
-        const libelleProduit = libelleProduitInput.value;
-        const poidsProduit = parseInt(poidsProduitInput.value);
-        const typeProduit = typeProduitInput.value;
+function closeModals() {
+    const modal = document.getElementById('details-modal') as HTMLDialogElement;
+    if (modal) {
+        modal.close(); // Fermer le modal
+    }
+}
+(window as any).addProduct = addProduct;
 
-        // Création de l'instance de Produit
-        let produit: Produit;
-        switch (typeProduit) {
-            case 'alimentaire':
-                produit = new Alimentaire(libelleProduit, poidsProduit);
-                break;
-            case 'chimique':
-                produit = new Chimique(libelleProduit, poidsProduit);
-                break;
-            case 'fragile':
-                produit = new Fragile(libelleProduit, poidsProduit);
-                break;
-            case 'incassable':
-                produit = new Incassable(libelleProduit, poidsProduit);
-                break;
-            default:
-                produit = new Produit(libelleProduit, poidsProduit);
-        }
 
-        // Ajout du produit à la cargaison
-        cargaison.ajouterProduit(produit);
+function validateForm(): boolean {
+    const typeInput = <HTMLSelectElement>document.getElementById('type-cargaison');
+    const nbrproduit = <HTMLInputElement>document.getElementById('Nproduit');
+    const nbrproduitError = document.getElementById('Nproduit-error');
+    const datedebutInput = <HTMLInputElement>document.getElementById('date-debut');
+    const datefinInput = <HTMLInputElement>document.getElementById('date-fin');
+    const datedebutError = document.getElementById('datedebut-error');
+    const datefinError = document.getElementById('datefin-error');
 
-        cargaisons.push(cargaison);
-        console.log(`Cargaison ajoutée: ${cargaison.info()}`);
-        addCargaisonToTable(cargaison);
-    } else {
-        console.log("Type de cargaison invalide.");
+    let isValid = true;
+
+    if (typeInput.value === "") {
+        isValid = false;
+    }
+
+    datedebutError.textContent = '';
+    datefinError.textContent = '';
+
+    if (datedebutInput.value === "") {
+        datedebutError.textContent = "Veuillez remplir ce champ.";
+        datedebutError.style.color = "red";
+        isValid = false;
+    }
+
+    if (datefinInput.value === "") {
+        datefinError.textContent = "Veuillez remplir ce champ.";
+        datefinError.style.color = "red";
+        isValid = false;
+    }
+
+    const dateDebut = new Date(datedebutInput.value);
+    const today = new Date();
+    if (dateDebut <= today) {
+        datedebutError.textContent = "La date de début doit être supérieure à la date d'aujourd'hui.";
+        datedebutError.style.color = "red";
+        isValid = false;
+    }
+
+    const dateFin = new Date(datefinInput.value);
+    if (dateFin <= dateDebut) {
+        datefinError.textContent = "La date de fin doit être supérieure à la date de début.";
+        datefinError.style.color = "red";
+        isValid = false;
+    }
+
+    return isValid;
+}
+
+const prevPageButton = document.getElementById('prevPage') as HTMLButtonElement;
+const nextPageButton = document.getElementById('nextPage') as HTMLButtonElement;
+const currentPageSpan = document.getElementById('currentPage') as HTMLSpanElement;
+
+let currentPage = 1;
+const itemsPerPage = 4;
+
+prevPageButton.addEventListener('click', () => {
+    if (currentPage > 1) {
+        currentPage--;
+        afficherCargaisons(filteredCargaisons.length > 0 ? filteredCargaisons : cargaisons);
     }
 });
 
-function addCargaisonToTable(cargaison: Cargaison) {
-    const typeCargaison = document.getElementById('type-cargaison').value;
-
-    const tbody = document.querySelector('#results tbody');
-    if (tbody) {
-        const tr = document.createElement('tr');
-        tr.classList.add('border-b');
-
-        // Récupération du produit ajouté à la cargaison
-        const dernierProduit = cargaison.produits[cargaison.produits.length - 1];
-
-        tr.innerHTML = `
-            <td>${typeCargaison === 'aerienne' ? CargaisonAerienne.codeUnique :
-                typeCargaison === 'maritime' ? CargaisonMaritime.codeUnique :
-                typeCargaison === 'routiere' ? CargaisonRoutiere.codeUnique : 'Code non défini'}</td>
-                <td class="py-1 px-1">${cargaison.type}</td>
-                <td class="py-1 px-1 pl-10">${cargaison.distance}km</td>
-                <td class="py-1 px-1 nb-cell">${cargaison.nbProduits()}</td>
-                <td class="py-1 px-1 pd-cell">${dernierProduit.poids}kg</td>
-                <td class="py-1 px-1">${cargaison.sommeTotaleC()}</td>
-                <td class="py-1 px-1">En cours</td>
-                <td class="py-1 px-1 flex flex-column">
-                    <button class="bg-blue-500 hover:bg-blue-700 text-white text-xl pr-3 font-bold rounded" onclick="showDetails('${cargaison.type}', ${cargaison.distance})">Détails</button>
-                    <button class="bg-green-500 hover:bg-green-700 text-white text-xl font-bold ml-5 pr-3 rounded" onclick="ajouterProduit('${cargaison.type}', ${cargaison.distance})">Ajouter Produit</button>
-                    <button class="bg-yellow-500 hover:bg-yellow-700 text-white text-xl font-bold ml-5 pr-3 rounded">Éditer</button>
-                    <button class="bg-red-500 hover:bg-red-700 text-white font-bold ml-5 text-xl pr-3 rounded">Supprimer</button>
-                </td>
-        `;
-
-        tbody.appendChild(tr);
-
-        // Call toggleTableColumns to ensure the correct columns are displayed after adding a new row
-        const cargopleinSelect = document.getElementById('cargoplein') as HTMLSelectElement;
-        toggleTableColumns(cargopleinSelect.value);
+nextPageButton.addEventListener('click', () => {
+    const totalItems = cargaisons.length;
+    const lastPage = Math.ceil(totalItems / itemsPerPage);
+    if (currentPage < lastPage) {
+        currentPage++;
+        afficherCargaisons(filteredCargaisons.length > 0 ? filteredCargaisons : cargaisons);
     }
+});
+
+function afficherCargaisons(data: Cargaison[]): void {
+    fetch('http://www.rama.seck:9000/projetTSPHP/save.php')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erreur réseau');
+            }
+            return response.text();
+        })
+        .then(responseText => {
+            try {
+                const data = JSON.parse(responseText);
+                if (!data.cargaisons) {
+                    throw new Error('Données mal structurées');
+                }
+
+                cargaisons = data.cargaisons;
+
+                const cargaisonList = document.getElementById('tbodycargaison');
+                if (!cargaisonList) {
+                    console.error('Element avec ID "tbodycargaison" non trouvé');
+                    return;
+                }
+                cargaisonList.innerHTML = '';
+
+                if (cargaisons.length === 0) {
+                    const message = document.createElement('p');
+                    message.textContent = 'Aucune cargaison ne correspond aux critères de filtrage.';
+                    cargaisonList.appendChild(message);
+                    return;
+                }
+
+                const startIndex = (currentPage - 1) * itemsPerPage;
+                const endIndex = startIndex + itemsPerPage;
+                const paginatedCargaisons = (filteredCargaisons.length > 0 ? filteredCargaisons : cargaisons).slice(startIndex, endIndex);
+
+                paginatedCargaisons.forEach(cargaison => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${cargaison.codeUnique}</td>
+                        <td>${cargaison.type}</td>
+                        <td>${cargaison.distance}</td>
+                        <td>${cargaison.datedebut}</td>
+                        <td>${cargaison.datefin}</td>
+                        <td>${cargaison.lieu_depart}</td>
+                        <td>${cargaison.lieu_arrive}</td>
+                      
+
+                        <td>en cour</td>
+                        <td>fermer</td>
+                        <td style="display:flex !important">
+                        <button class="text-blue-400 text-xl pr-3 font-bold rounded" onclick="showDetails('${cargaison.type}', ${cargaison.distance})">Détails</button>
+                            <button class="text-blue-400 text-xl pr-3 font-bold rounded" onclick="addProduct('${cargaison.type}', ${cargaison.distance})">Ajouter</button>
+
+                        </td>
+
+                       
+
+                       
+
+                    `;
+                    cargaisonList.appendChild(row);
+                });
+
+                const totalItems = cargaisons.length;
+                const lastPage = Math.ceil(totalItems / itemsPerPage);
+                currentPageSpan.textContent = currentPage.toString();
+                prevPageButton.disabled = currentPage === 1;
+                nextPageButton.disabled = currentPage === lastPage;
+            } catch (error) {
+                console.error('Erreur lors du parsing JSON:', error);
+                console.log('Raw response text:', responseText);
+            }
+        })
+        .catch(error => {
+            console.error('Erreur lors du fetch:', error);
+        });
 }
-//option d"affichage poids ou nb de proquit dans le tableau
-const nbrproduct=document.getElementById('nb');
-const poid=document.getElementById('pd');
 
-document.getElementById('form-produit')?.addEventListener('submit', (e) => {
+
+
+function filterCargaisons() {
+    const codeInputElement = document.getElementById('code') as HTMLInputElement;
+    const datedebutInputElement = document.getElementById('date-debut') as HTMLInputElement;
+    const datefinInputElement = document.getElementById('date-fin') as HTMLInputElement;
+    const lieuDepartInputElement = document.getElementById('lieu-depart') as HTMLInputElement;
+    const lieuArriveInputElement = document.getElementById('lieu-arrive') as HTMLInputElement;
+
+    const codeInput = codeInputElement?.value.trim().toLowerCase() || '';
+    const datedebutInput = datedebutInputElement?.value.trim() || '';
+    const datefinInput = datefinInputElement?.value.trim() || '';
+    const lieuDepartInput = lieuDepartInputElement?.value.trim().toLowerCase() || '';
+    const lieuArriveInput = lieuArriveInputElement?.value.trim().toLowerCase() || '';
+
+
+    filteredCargaisons = cargaisons.filter(cargaison => {
+        const matchCode = codeInput ? cargaison.codeUnique.toLowerCase().includes(codeInput) : true;
+        const matchDateDebut = datedebutInput ? cargaison.datedebut === datedebutInput : true;
+        const matchDateFin = datefinInput ? cargaison.datefin === datefinInput : true;
+        const matchLieuDepart = lieuDepartInput ? cargaison.lieu_depart.toLowerCase().includes(lieuDepartInput) : true;
+        const matchLieuArrive = lieuArriveInput ? cargaison.lieu_arrive.toLowerCase().includes(lieuArriveInput) : true;
+        return matchCode && matchDateDebut && matchDateFin && matchLieuDepart &&
+        matchLieuArrive;
+    });
+
+    currentPage = 1;
+    afficherCargaisons(filteredCargaisons);
+}
+
+const filterButton = document.getElementById('filter-button') as HTMLButtonElement;
+if (filterButton) {
+    filterButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        filterCargaisons();
+    });
+}
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    afficherCargaisons(cargaisons);
+});
+
+
+
+
+
+afficherCargaisons(cargaisons);
+
+
+
+const form = document.getElementById('cargaisonForm') as HTMLFormElement;
+const envoie = document.getElementById('submit-cargaison') as HTMLButtonElement;
+envoie.addEventListener('click', async (e) => {
     e.preventDefault();
-    const libelleInput = <HTMLInputElement>document.getElementById('libelle-produit');
-    const poidsInput = <HTMLInputElement>document.getElementById('poids-produit');
-    const typeInput = <HTMLSelectElement>document.getElementById('type-produit');
-    const toxiciteInput = <HTMLInputElement>document.getElementById('toxicite-produit');
 
-    const libelle = libelleInput.value;
-    const poids = parseFloat(poidsInput.value);
-    const type = typeInput.value;
+    if (validateForm()) {
+        const distanceInput = document.getElementById('distance') as HTMLInputElement;
+        const typeInput = document.getElementById('type-cargaison') as HTMLSelectElement;
+        const poidscargaison = document.getElementById('poids') as HTMLInputElement;
+        const nombreproduit = document.getElementById('Nproduit') as HTMLInputElement;
+        const datedebutInput = document.getElementById('date-debut') as HTMLInputElement;
+        const datefinInput = document.getElementById('date-fin') as HTMLInputElement;
+        const lieudepartInput = document.getElementById('lieu_depart') as HTMLInputElement;
+        const lieuarriverInput = document.getElementById('lieu_arrive') as HTMLInputElement;
+        const distance = parseInt(distanceInput.value);
+        const type = typeInput.value;
+        const datedebut = datedebutInput.value;
+        const datefin = datefinInput.value;
+        const poidscargo = parseFloat(poidscargaison.value);
+        const nomreproduit = parseInt(nombreproduit.value);
+        const lieudepart=lieudepartInput.value;
+        const lieuarrive=lieuarriverInput.value
 
-    let produit: Produit | null = null;
-    switch (type) {
-        case 'alimentaire':
-            produit = new Alimentaire(libelle, poids);
-            break;
-        case 'chimique':
-            const toxicite = parseInt(toxiciteInput.value);
-            produit = new Chimique(libelle, poids, toxicite);
-            break;
-        case 'fragile':
-            produit = new Fragile(libelle, poids);
-            break;
-            case 'incassable':
-                produit = new Incassable(libelle, poids);
+        let cargaison: Cargaison | null = null;
+        switch (type) {
+            case 'aerienne':
+                cargaison = new CargaisonAerienne(distance, datedebut, datefin, poidscargo, nomreproduit,lieudepart,lieuarrive);
+                break;
+            case 'maritime':
+                cargaison = new CargaisonMaritime(distance, datedebut, datefin, poidscargo, nomreproduit,lieudepart,lieudepart);
+                break;
+            case 'routiere':
+                cargaison = new CargaisonRoutiere(distance, datedebut, datefin, poidscargo, nomreproduit,lieuarrive,lieudepart);
                 break;
         }
-    
-        if (produit) {
-            console.log(`Produit ajouté: ${produit.info()}`);
-        } else {
-            console.log("Type de produit invalide.");
+
+        if (cargaison) {
+            cargaisons.push(cargaison);
+
+            const cargaisonData = {
+                codeUnique:cargaison.codeUnique,
+                type: cargaison.type,
+                distance: cargaison.distance,
+                produits: cargaison.produits,
+                datedebut: cargaison.datedebut,
+                datefin: cargaison.datefin,
+                poidscargo:cargaison.poidscargo,
+                nomreproduit:cargaison.nomreproduit,
+                lieu_depart:cargaison.lieu_depart,
+                lieu_arrive:cargaison.lieu_arrive,
+
+
+            };
+
+
+            const data = JSON.stringify(cargaisonData);
+
+            try {
+                const response = await fetch('http://www.rama.seck:9000/projetTSPHP/save.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: data
+                });
+
+                if (response.ok) {
+                    const result = await response.json();
+                    console.log('Succès:', result);
+                    afficherCargaisons(cargaisons);
+
+                } else {
+                    console.error('Erreur lors de la requête:', response.statusText);
+                }
+            } catch (error) {
+                console.error('Erreur lors de l\'envoi:', error);
+            }
+            alert("cargaison ajouté");
+
         }
-    });
+    }
+});
+
+//pagination
+
+
+
+//option d"affichage poids ou nb de proquit dans le tableau
+const nbrproduct=document.getElementById('nb');
+const poid=document.getElementById('pd'); 
     
-    document.addEventListener('DOMContentLoaded', (event) => {
+/*     document.addEventListener('DOMContentLoaded', (event) => {
         const modal = document.getElementById('details-modal');
         const closeButton = document.querySelector('.close-button');
     
@@ -189,7 +374,57 @@ document.getElementById('form-produit')?.addEventListener('submit', (e) => {
                     modal.style.display = 'none';
                 }
             });
-        }
+        } */
+
+
+
+
+
+
+
+
+ //formulaire cargaison
+ const productform = document.getElementById('btn-envoyer') as HTMLButtonElement;
+
+ productform.addEventListener('click', (event) => {
+     event.preventDefault();
+   console.log("bonjour")
+ });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         const cargopleinSelect = document.getElementById('cargoplein') as HTMLSelectElement;
 
@@ -202,7 +437,49 @@ document.getElementById('form-produit')?.addEventListener('submit', (e) => {
             // Initial toggle based on the default value
             toggleTableColumns(cargopleinSelect.value);
         }
+
+
+    const poidsContainer = document.getElementById('poids-produit');
+    const nbProduitsContainer = document.getElementById('nbr_produit');
+
+
+poidsContainer.style.display="none"
+nbProduitsContainer.style.display="none"
+
+
+
+
+
+
+
+
+
+
+
+    //choix cargaison pleine
+    document.getElementById('cargoplein')?.addEventListener('change', function (this: HTMLInputElement) {
+        const poidsContainer = document.getElementById('poids-produit') as HTMLElement | null;
+        const nbProduitsContainer = document.getElementById('nbr_produit') as HTMLElement | null;
+    
+        if (this.value === 'poids') {
+            if (poidsContainer) poidsContainer.style.display = 'block';
+            if (nbProduitsContainer) nbProduitsContainer.style.display = 'none';
+        } else if (this.value === 'nbproduit') {
+            if (poidsContainer) poidsContainer.style.display = 'none';
+            if (nbProduitsContainer) nbProduitsContainer.style.display = 'block';
+        }
     });
+    
+
+
+  
+
+ 
+
+   
+
+
+    // affichage optioneele des valeurs pods et nbproduit
 
 
 
@@ -226,13 +503,90 @@ document.getElementById('form-produit')?.addEventListener('submit', (e) => {
         }
     }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     
     const burger = document.getElementById('burger');
     const sidebar = document.getElementById('sidebar');
     const millieu = document.getElementById("main");
     const accueil = document.getElementById("accueil");
     const accecargaison = document.getElementById("btncargaison");
-    const footer = document.getElementById("main1");
     
     burger.addEventListener('click', () => {
         sidebar.classList.toggle('show');
@@ -253,7 +607,7 @@ document.getElementById('form-produit')?.addEventListener('submit', (e) => {
     section1.style.display = "none";
     container.style.display = "none";
     
-    Cargaisons.addEventListener("click", () => {
+   /*  Cargaisons.addEventListener("click", () => {
         container.style.display = "block";
         section1.style.display = "none";
         millieu.style.display = "none";
@@ -266,10 +620,9 @@ document.getElementById('form-produit')?.addEventListener('submit', (e) => {
         millieu.style.display = "none";
         footer.style.marginTop = "43%";
     });
+     */
     
-    footer.style.marginTop = "-8px";
-    
-    accueil.addEventListener("click", () => {
+   /*  accueil.addEventListener("click", () => {
         millieu.style.display = "block";
         section1.style.display = "none";
         container.style.display = "none";
@@ -281,7 +634,7 @@ document.getElementById('form-produit')?.addEventListener('submit', (e) => {
         millieu.style.display = "none";
         section1.style.display = "none";
         footer.style.marginTop = "350px";
-    });
+    }); */
     
     const images = ['../public/img/avions.jpg', '../public/img/bateau.jpg', '../public/img/avionss.jpg'];
     let currentIndex = 0;
@@ -293,90 +646,45 @@ document.getElementById('form-produit')?.addEventListener('submit', (e) => {
     
     setInterval(changeBackgroundImage, 2000);
     
-    const modal = document.getElementById("modale");
-    modal.style.display = "none";
+    const modalss = document.getElementById("my_modal_5");
+    const body=document.querySelector("body")
     
     const modals = document.getElementById("modals");
     modals.addEventListener("click", () => {
-        modal.style.display = "block";
+        modalss.style.display = "block";
+      
     });
-    
+    const mod=document.getElementById('fermer')
+    mod.style.color="red"
     const fermer = document.getElementById("annuler");
+    fermer.style.color="red"
     fermer.addEventListener("click", () => {
-        modal.style.display = "none";
+        mod.style.display = "none";
+        form.reset();
     });
-    
-    document.getElementById('cargoplein').addEventListener('change', function () {
+
+
+
+    document.getElementById('cargoplein')!.addEventListener('change', function (this: HTMLSelectElement) {
         const nbproduits = document.getElementById('nbproduits');
-        nbproduits.style.display = this.value === 'nbproduit' ? 'block' : 'none';
-    });
+        if (this.value === 'nbproduit') {
+            if (nbproduits) {
+                nbproduits.style.display = 'block';
+            }
+        } else {
+            if (nbproduits) {
+                nbproduits.style.display = 'none';
+            }
+        }
+    })
+
 
     // map
-
-
-    let map = L.map('map').setView([48.8566, 2.3522], 13); // Centre sur Paris par défaut
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
-
-    let startMarker, endMarker;
-    let startPoint, endPoint;
-
-    let geocoder = L.Control.Geocoder.nominatim();
-
-    document.getElementById('lieu_depart').addEventListener('focus', () => {
-        map.once('click', function(e) {
-            if (startMarker) {
-                map.removeLayer(startMarker);
-            }
-            startMarker = L.marker(e.latlng).addTo(map);
-            startPoint = e.latlng;
-            geocoder.reverse(e.latlng, map.options.crs.scale(map.getZoom()), function(results) {
-                let result = results[0];
-                document.getElementById('lieu_depart').value = result.name;
-            });
-            calculateDistance();
-        });
-    });
-
-    document.getElementById('lieu_arrive').addEventListener('focus', () => {
-        map.once('click', function(e) {
-            if (endMarker) {
-                map.removeLayer(endMarker);
-            }
-            endMarker = L.marker(e.latlng).addTo(map);
-            endPoint = e.latlng;
-            geocoder.reverse(e.latlng, map.options.crs.scale(map.getZoom()), function(results) {
-                let result = results[0];
-                document.getElementById('lieu_arrive').value = result.name;
-            });
-            calculateDistance();
-        });
-    });
-
-    function calculateDistance() {
-        if (startPoint && endPoint) {
-            let start = [startPoint.lat, startPoint.lng];
-            let end = [endPoint.lat, endPoint.lng];
-
-            let router = L.Routing.control({
-                waypoints: [
-                    L.latLng(start[0], start[1]),
-                    L.latLng(end[0], end[1])
-                ],
-                createMarker: function() { return null; },
-                routeWhileDragging: false,
-                addWaypoints: false
-            }).addTo(map);
-
-            router.on('routesfound', function(e) {
-                let routes = e.routes;
-                let summary = routes[0].summary;
-                document.getElementById('distance').value = (summary.totalDistance / 1000).toFixed(2); // distance en km
-                router.remove();
-            });
-        }
-    }
-
+    // Récupération du formulaire
+     
+    // Définition des classes de produits
    
+
+    // Ajoutez cet écouteur d'événements après que la page ait chargé
+  
+ 

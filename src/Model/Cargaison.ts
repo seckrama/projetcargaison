@@ -1,16 +1,30 @@
 import { Produit } from './Produit';
 
 abstract class Cargaison {
-    static poidsMaximal: number = 10000; // Poids maximal autorisé pour toutes les cargaisons
-
-
     public produits: Produit[] = [];
     public distance: number;
     public type: string;
+    public datedebut: string;
+    public datefin: string;
+    public poidscargo: number;
+    public nomreproduit: number;
+    public codeUnique: string;
+    public lieu_depart: string; // Ajout de la propriété lieu_depart
+    public lieu_arrive: string; // Ajout de la propriété lieu_arrive
 
-    constructor(distance: number, type: string) {
+
+    constructor(distance: number, type: string, datedebut: string, datefin: string, poidscargo: number, nomreproduit: number,lieu_depart: string, lieu_arrive: string) {
         this.distance = distance;
         this.type = type;
+        this.datedebut = datedebut;
+        this.datefin = datefin;
+        this.poidscargo = poidscargo;
+        this.nomreproduit = nomreproduit;
+        this.codeUnique = Cargaison.generateUniqueCode(); // Générer un code unique lors de la création
+
+        this.lieu_depart = lieu_depart;
+        this.lieu_arrive = lieu_arrive;
+        
     }
 
     public ajouterProduit(produit: Produit): void {
@@ -49,46 +63,43 @@ abstract class Cargaison {
     public abstract info(): string;
 
     public static generateUniqueCode(): string {
-        // Générer un code unique (par exemple, un identifiant aléatoire)
-        return Math.random().toString(36).substr(2, 9); // Exemple de génération d'identifiant aléatoire
-    }
+        const randomCode = Math.random().toString(36).substr(2, 4); // Générer une chaîne aléatoire de longueur 7
+        return "CO" + randomCode;    }
 }
 
 class CargaisonAerienne extends Cargaison {
-    static codeUnique: string = "AIR123"; // Code unique pour les cargaisons aériennes
-    constructor(distance: number) {
-        super(distance, "aerienne");
+    constructor(distance: number, datedebut: string, datefin: string, poidscargo: number, nomreproduit: number,lieu_depart: string, lieu_arrive: string) {
+        super(distance, "aerienne", datedebut, datefin, poidscargo, nomreproduit,lieu_depart,lieu_arrive);
     }
 
     public info(): string {
-        return `Cargaison Aérienne - Distance: ${this.distance} km, Nombre de produits: ${this.nbProduits()}`;
+        return `Cargaison Aérienne (Code: ${this.codeUnique}) - Distance: ${this.distance} km, Nombre de produits: ${this.nbProduits()}, Poids de la cargaison: ${this.poidscargo}, Nombre de produits: ${this.nomreproduit}, Date de début: ${this.datedebut}, Date de fin: ${this.datefin}`;
     }
 }
 
 class CargaisonMaritime extends Cargaison {
-    static codeUnique: string = "SEA456"; // Code unique pour les cargaisons maritimes
-
-    constructor(distance: number) {
-        super(distance, "maritime");
+    constructor(distance: number, datedebut: string, datefin: string, poidscargo: number, nomreproduit: number,lieu_depart: string, lieu_arrive: string) {
+        super(distance, "maritime", datedebut, datefin, poidscargo, nomreproduit,lieu_depart,lieu_arrive);
     }
 
     public info(): string {
-        return `Cargaison Maritime - Distance: ${this.distance} km, Nombre de produits: ${this.nbProduits()}`;
+        return `Cargaison Maritime (Code: ${this.codeUnique}) - Distance: ${this.distance} km, Nombre de produits: ${this.nbProduits()}, Poids de la cargaison: ${this.poidscargo}, Nombre de produits: ${this.nomreproduit}, Date de début: ${this.datedebut}, Date de fin: ${this.datefin}`;
     }
-
-
 }
 
 class CargaisonRoutiere extends Cargaison {
-    static codeUnique: string = "ROAD789"; // Code unique pour les cargaisons routières
-    constructor(distance: number) {
-        super(distance, "routiere");
+    constructor(distance: number, datedebut: string, datefin: string, poidscargo: number, nomreproduit: number,lieu_depart: string, lieu_arrive: string) {
+        super(distance, "routiere", datedebut, datefin, poidscargo, nomreproduit,lieu_depart,lieu_arrive);
     }
 
     public info(): string {
-        return `Cargaison Routière - Distance: ${this.distance} km, Nombre de produits: ${this.nbProduits()}`;
+        return `Cargaison Routière (Code: ${this.codeUnique}) - Distance: ${this.distance} km, Nombre de produits: ${this.nbProduits()}, Poids de la cargaison: ${this.poidscargo}, Nombre de produits: ${this.nomreproduit}, Date de début: ${this.datedebut}, Date de fin: ${this.datefin}`;
     }
 }
 
+
+
 export { Cargaison, CargaisonAerienne, CargaisonMaritime, CargaisonRoutiere };
-    
+
+
+

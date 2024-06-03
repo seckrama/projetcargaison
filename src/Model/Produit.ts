@@ -36,6 +36,8 @@ class Alimentaire extends Produit {
     }
 }
 
+
+
 class Chimique extends Produit {
     public toxicite: number;
 

@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "leaflet-control-geocoder": "^2.4.0",
     "tailwindcss": "^3.4.3",
     "ts-loader": "^9.5.1",
     "typescript": "^5.4.5",

@@ -1,10 +1,16 @@
 import { Produit } from './Produit';
 declare abstract class Cargaison {
-    static poidsMaximal: number;
     produits: Produit[];
     distance: number;
     type: string;
-    constructor(distance: number, type: string);
+    datedebut: string;
+    datefin: string;
+    poidscargo: number;
+    nomreproduit: number;
+    codeUnique: string;
+    lieu_depart: string;
+    lieu_arrive: string;
+    constructor(distance: number, type: string, datedebut: string, datefin: string, poidscargo: number, nomreproduit: number, lieu_depart: string, lieu_arrive: string);
     ajouterProduit(produit: Produit): void;
     nbProduits(): number;
     calculerFrais(produit: Produit): number;
@@ -13,18 +19,15 @@ declare abstract class Cargaison {
     static generateUniqueCode(): string;
 }
 declare class CargaisonAerienne extends Cargaison {
-    static codeUnique: string;
-    constructor(distance: number);
+    constructor(distance: number, datedebut: string, datefin: string, poidscargo: number, nomreproduit: number, lieu_depart: string, lieu_arrive: string);
     info(): string;
 }
 declare class CargaisonMaritime extends Cargaison {
-    static codeUnique: string;
-    constructor(distance: number);
+    constructor(distance: number, datedebut: string, datefin: string, poidscargo: number, nomreproduit: number, lieu_depart: string, lieu_arrive: string);
     info(): string;
 }
 declare class CargaisonRoutiere extends Cargaison {
-    static codeUnique: string;
-    constructor(distance: number);
+    constructor(distance: number, datedebut: string, datefin: string, poidscargo: number, nomreproduit: number, lieu_depart: string, lieu_arrive: string);
     info(): string;
 }
 export { Cargaison, CargaisonAerienne, CargaisonMaritime, CargaisonRoutiere };
